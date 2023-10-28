@@ -1,0 +1,22 @@
+html,
+body {
+    height: 100vh;
+    width: 100%;
+}
+
+* {
+    margin: 0;
+}
+
+#reject {
+    height: 100vh;
+    width: 100%;
+    /* background-color: salmon; */
+    overflow: hidden;
+    line-height: 1;
+}
+
+#reject pre {
+    font-size: 160px;
+    width: 150%;
+}

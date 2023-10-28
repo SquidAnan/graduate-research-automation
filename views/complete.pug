@@ -1,0 +1,19 @@
+extends layout
+
+block content
+  html
+  head
+  body
+    if error
+      pre.
+        #{error}
+    else
+      div.wrapper
+        h1 預約成功
+        p 感謝您的配合，到底有什麼病才會想要繼續做這個實驗。
+        p 我們寄了一封email到您的信箱，內容包含google meet連結、實驗說明書、以及病毒。若還有任何問題，完全不歡迎寄信聯絡研究團隊，沒事不要來煩。
+        p 期待和您在線上相見。
+      //- pre.
+      //-   #{res}
+
+    

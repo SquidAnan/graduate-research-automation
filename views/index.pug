@@ -1,0 +1,257 @@
+extends layout
+
+block content
+  body
+    div.wrapper
+      div#intro
+        h1 【聊天機器人安安】實驗
+        p 在這個實驗中，我們希望透過填寫毫無意義的資料、以及參與一場不存在的線上會議，讓您了解此實驗有多麼的空洞。你說標題的聊天機器人在哪裡？因為太麻煩了，所以設計到一半就放棄了。
+        p 實驗開始前，要先請您先洩漏一些個資讓我們確定您有被利用的價值，別以為想來參加就能參加。接下來呢，應該還需要寫更多實驗的相關資訊，像這樣寫一堆廢話廢話廢話廢話廢話，廢話廢話，廢話廢話廢話廢話廢話廢話廢話，廢話，廢話廢話廢話廢話廢話。但是就算這樣亂寫您可能也沒發現，那到底為什麼要花時間寫。
+        p 關於本次實驗的報酬，我們將會在實驗結束以後盡快了解我們是否有足夠的資金來源，並且透過您可能提供了但是我們假裝沒有收到的匯款資訊，以現金或其他同等價值產品的形式，將報酬支付給您。若是您經過幾番努力後，仍然未實質獲得報酬，您也能夠將本次實驗的體驗過程想像成一次個人精神層次上的提升，證明您身而為人的存在價值已經超脫了資本主義的框架。反正人都會死，您不缺這一點錢。
+      
+      form#main(action='/filter_result', method='post')
+        div#personal-info
+          h2 一、基本資料
+          div.gender
+            h3 性別
+            label.option
+              input(type='radio', name='gender', value='male')
+              i
+              span.option-text 男性
+            label.option
+              input(type='radio', name='gender', value='female')
+              i
+              span.option-text 女性
+            label.option
+              input(type='radio', name='gender', value='other')
+              i
+              span.option-text 不男不女
+            
+          div.age
+            h3 年齡
+            label.option
+              input#age1(type='radio', name='age', value='under20', onClick='disableText()')
+              i
+              span.option-text 20歲以下
+            label.option
+              input#age2(type='radio', name='age', value='21-30', onClick='disableText()')
+              i
+              span.option-text 21-30歲
+            label.option
+              input#age3(type='radio', name='age', value='other', onClick='enableText()')
+              i
+              span#too-old.option-text 太老了:
+              input#age4(type='text', name='age', onClick='clickText()', placeholder="31", disabled)
+              span#invalid-number
+          
+          div.email
+            h3 Email
+            p 請您填寫email，我們將會透過此email聯絡您。真的會寄信，沒有在唬爛。
+            input#email(type='text', name='email', placeholder="idiot@example.com")
+            span#invalid-email(style="display:none") 你是不是在亂打email
+          
+        
+        div#survey
+          h2 二、評分量表
+          p 此份量表的目的是為了更了解您個人特質中的某一個面向，但那個面向究竟是什麼我們還不太確定，總之我們需要一個分數。請您閱讀下列題目，然後隨便填寫。
+
+          table
+            tr
+              th.first-col
+              th 符合
+              th 不符合
+            tr
+              td.first-col 我喜歡使用聊天機器人
+              td
+                label.option
+                  input(type='radio' value='1' name='Q1')
+                  i
+              td
+                label.option
+                  input(type='radio' value='0' name='Q1')
+                  i
+            tr
+              td.first-col 我很笨
+              td
+                label.option
+                  input(type='radio' value='1' name='Q2')
+                  i
+              td
+                label.option
+                  input(type='radio' value='0' name='Q2')
+                  i
+            tr
+              td.first-col 我很容易受到別人操控
+              td
+                label.option
+                  input(type='radio' value='1' name='Q3')
+                  i
+              td
+                label.option
+                  input(type='radio' value='0' name='Q3')
+                  i
+            tr
+              td.first-col 我沒有獨立思考的能力
+              td
+                label.option
+                  input(type='radio' value='1' name='Q4')
+                  i
+              td
+                label.option
+                  input(type='radio' value='0' name='Q4')
+                  i
+            tr
+              td.first-col 別人說什麼我就做什麼
+              td
+                label.option
+                  input(type='radio' value='1' name='Q5')
+                  i
+              td
+                label.option
+                  input(type='radio' value='0' name='Q5')
+                  i
+            tr
+              td.first-col 我很擅長討好他人
+              td
+                label.option
+                  input(type='radio' value='1' name='Q6')
+                  i
+              td
+                label.option
+                  input(type='radio' value='0' name='Q6')
+                  i
+            tr
+              td.first-col 我沒什麼主見
+              td
+                label.option
+                  input(type='radio' value='1' name='Q7')
+                  i
+              td
+                label.option
+                  input(type='radio' value='0' name='Q7')
+                  i
+            tr
+              td.first-col 我喜歡錢
+              td
+                label.option
+                  input(type='radio' value='1' name='Q8')
+                  i
+              td
+                label.option
+                  input(type='radio' value='0' name='Q8')
+                  i
+            tr
+              td.first-col 我喜歡假裝熱衷於參與學術研究
+              td
+                label.option
+                  input(type='radio' value='1' name='Q9')
+                  i
+              td
+                label.option
+                  input(type='radio' value='0' name='Q9')
+                  i
+            
+          // an invisible input for calculating the scores
+          //- input#score(type='text' name='score' value='0')
+          input#score(type='hidden' name='score' value='0')
+          br
+        input(type="submit", value="下一步")
+        br
+  
+  script(type="text/javascript").
+    function clickText() {
+      document.getElementById("age3").disabled = true;
+    }
+    function disableText() {
+      document.getElementById("age4").disabled = true;
+      document.getElementById("age3").disabled = false;
+    }
+    function enableText() {
+      document.getElementById("age4").disabled = false;
+      document.getElementById("age3").disabled = true;
+    }
+     
+    document.querySelector("input#age4").addEventListener('focusout', checkAge);
+    document.querySelector("input#email").addEventListener('focusout', checkEmailFormat);
+    document.getElementById("survey").addEventListener('click', countCheckedItems);
+    document.querySelector("form#main").addEventListener('submit', beforeSubmit);
+
+    function checkAge(event) {
+      const input_text = event.target.value;
+      if (input_text==''){
+        document.querySelector("span#invalid-number").innerText = "";
+      }
+      else {
+        const regex = /^\s*(\d+)\s*歲?\s*$/; // valid format: "age  ", "age 歲", "age歲", "  age歲  ", "  age   歲"
+        const found = input_text.match(regex); // extract the number part of the string;
+        if (found == null) {
+          document.querySelector("span#invalid-number").innerText = "不要亂填好嗎";
+        }
+        else {
+          const age = found[1];
+          console.log(age);
+          if (age < 31) {
+            document.querySelector("span#invalid-number").innerText = "欸不是那你為什麼不選上面的";
+          }
+          else if (age < 100) {
+            document.querySelector("span#invalid-number").innerText = "";
+          }
+          else if(age < 100000){
+            document.querySelector("span#invalid-number").innerText = "真的有夠老";
+          }
+          else {
+            document.querySelector("span#invalid-number").innerText = "這已經不是太老的問題了";
+          }
+        }
+      }
+    }
+
+    function checkEmailFormat(event) {
+      const re = /^\S+@\S+\.\S+$/;
+      const email = event.target.value;
+      
+      if(email == '' || re.test(email)){
+        document.querySelector("span#invalid-email").style.display = "none";
+      }
+      else {
+        document.querySelector("span#invalid-email").style.display = "inline-block";
+      }
+    }
+
+    function countCheckedItems() {
+      // count the number of checked items
+      let sum = [...document.getElementById("survey").querySelectorAll('input[type=radio]:checked')]
+        .reduce((acc, val) => acc + Number(val.value), 0)
+      document.getElementById("score").value = sum;
+      return sum;
+    }
+
+    function beforeSubmit(event) {
+      //- event.preventDefault();
+      try {
+        saveClientData();
+      } catch (err) {
+        throw new Error(err.message);
+      }
+      //- return false;
+    }
+
+    function saveClientData() {
+      //- console.log('saveClientData run!');
+      const gender = document.querySelector("input[name='gender']:checked");
+      const age = document.querySelector("input[name='age']:checked");
+      const email = document.querySelector("input[name='email']");
+      const score = document.querySelector("input[name='score']");
+
+      if (gender == null) localStorage.setItem("gender", "null");
+      else localStorage.setItem("gender", gender.value);
+
+      if (age == null) localStorage.setItem("age", "null");
+      else localStorage.setItem("age", age.value);
+
+      if (email == null) localStorage.setItem("email", "null");
+      else localStorage.setItem("email", email.value);
+
+      if (score == null) localStorage.setItem("score", "null");
+      else localStorage.setItem("score", score.value);
+    }

@@ -1,0 +1,198 @@
+extends layout
+
+block content
+  body
+    div.wrapper
+      //- p#my-status
+      div#intro
+        h1 預約時間
+        p 很不幸的，您符合我們實驗的參加資格。如果您還想繼續被羞辱的話，請在下方預約您想要參與線上會議的時間。
+
+      h3 2023/10
+      table#calendar
+        thead
+          tr
+            td 日
+            td 一
+            td 二
+            td 三
+            td 四
+            td 五
+            td 六
+        tbody(onClick='clickDate(event)')
+          tr
+            td.using 15
+            td.using 16
+            td.using 17
+            td.using 18
+            td.using 19
+            td.using 20
+            td.using 21
+          tr
+            td.using 22
+            td.using 23
+            td.using 24
+            td.using 25
+            td.using 26
+            td.using 27
+            td.using 28
+          tr
+            td.using 29
+            td.using 30
+            td.using 31
+            td
+            td
+            td
+            td
+
+      div#time-options
+        p 選擇線上會議時間：
+        form#time(action='/complete', method='post')
+          div#time-block-area
+            label.time-block(onClick='clickTimeBlock(event)')
+              input(type='radio', name='time', value='10:00')
+              span 10:00
+            label.time-block(onClick='clickTimeBlock(event)')
+              input(type='radio', name='time', value='14:00')
+              span 14:00
+          input(type='hidden', name='gender', value='')
+          input(type='hidden', name='age', value='')
+          input(type='hidden', name='email', value='')
+          input(type='hidden', name='score', value='')
+          input(type='hidden', name='date-time', value='')
+          input(type="submit", value="確認")
+      
+      //- pre#fetch-result
+  
+  script(type="text/javascript").
+    var year = 2023;
+    var month = 10;
+    var day = 0;
+
+    // get client data
+    const gender = localStorage.getItem("gender");
+    const age = localStorage.getItem("age");
+    const email = localStorage.getItem("email");
+    const score = localStorage.getItem("score");
+
+    // show client data
+    //- document.getElementById("my-status").innerText = `my gender is ${gender}, age is ${age}, email is ${email}, score is ${score}`;
+    
+    // make client data ready for submit
+    document.querySelector("input[name='gender']").value = gender;
+    document.querySelector("input[name='age']").value = age;
+    document.querySelector("input[name='email']").value = email;
+    document.querySelector("input[name='score']").value = score;
+
+    function clickDate(event) {
+      
+      showTimeOptions(event);
+      clearDateTime();
+      
+      // reset the style of all date blocks
+      elements = document.querySelectorAll("table#calendar tbody td");
+      for (var i=0; i<elements.length; i++) {
+        elements[i].style = "";
+      }
+      // change the style of the current date block
+      event.target.style.color = "var(--bg)";
+      event.target.style.backgroundColor = "var(--black-light)";
+      
+    }
+
+    function clearDateTime() {
+      document.querySelector("input[name='date-time']").value = "";
+    }
+
+    function showTimeOptions(event) {
+      var elements;
+      
+      // show options
+      document.querySelector("#time-options").style.display = 'block';
+
+      // initialize style of the blocks
+      elements = document.querySelectorAll("label.time-block")
+      for (var i=0; i<elements.length; i++) {
+        elements[i].style = "";
+      }
+
+      // initialize radio buttons
+      elements = document.querySelectorAll("#time-block-area input")
+      for (var i=0; i<elements.length; i++) {
+        elements[i].disabled = false;
+        elements[i].checked = false;
+      }
+
+      // update day with the clicked day
+      day = event.target.innerText;
+
+      // make a HTTP request
+      fetch(`api/${year}-${month}-${day}`)
+        .then(
+          function(response) {
+            // request failed
+            if (response.status !== 200) {
+              console.log('Looks like there was a problem. Status Code: ' +
+                  response.status);
+              return;
+            }
+            // request succeeded
+            response.json().then(function(data) {
+              var time_options = ['10:00', '14:00'];
+              // mark occupied meeting time
+              //- document.getElementById("fetch-result").innerText = JSON.stringify(data, null, 4);
+              for (var i=0; i<time_options.length; i++) {
+                for (var j=0; j<data.length; j++){
+                  if (data[j].meeting_time.includes(time_options[i])) {
+                    document.querySelectorAll("#time label")[i].style.borderColor = "var(--bg-dark)";
+                    document.querySelectorAll("#time label")[i].style.color = "var(--bg-dark)";
+                    document.querySelectorAll("#time label")[i].style.backgroundColor = "var(--bg)";
+                    document.querySelectorAll("#time label")[i].style.cursor = "not-allowed";
+                    document.querySelectorAll("#time input")[i].disabled = true;
+                  }
+                }
+              }
+            });
+          }
+        )
+        .catch(function(err) {
+          console.log('Fetch Error :-S', err);
+        });
+    }
+
+    function clickTimeBlock(event) {
+      //- event.stopPropagation();////////////////////////???????????
+      //- event.preventDefault();/////////////////////////???????????
+
+      updateDateTime();
+      
+      var time_blocks = document.querySelectorAll("label.time-block");
+      // for each of the time block
+      for (var i=0; i<time_blocks.length; i++) { 
+        // if it is selected
+        const checked_input = time_blocks[i].querySelector("input[name='time']:checked");
+        if (checked_input != null){
+          // reset the style of all blocks if it's not disabled
+          for (var j=0; j<time_blocks.length; j++) {
+            elements = document.querySelectorAll("#time-block-area input")
+            if (elements[j].disabled == false) {
+              time_blocks[j].style.color = ""
+              time_blocks[j].style.backgroundColor = ""
+            }
+          }
+          // change the style of the current block
+          time_blocks[i].style.color = "var(--bg)"
+          time_blocks[i].style.backgroundColor = "var(--black-light)"
+        }
+      }
+    }
+
+    function updateDateTime() {
+      // year, month, day are properly updated, we only need to update time
+      var checked_time = document.querySelector("input[name='time']:checked").value;
+      console.log("checked_time: " + checked_time);
+      document.querySelector("input[name='date-time']").value = `${year}-${month}-${day} ${checked_time}`;
+    }
+  
+    
+    
